@@ -1,19 +1,12 @@
 % 清除环境  
 clear; clc; close all;  
-% 
-% load("Helmholta_wfx_com_norm0_1_w50_L0_U50pi_sc_randf_L300pi_U350pi_lam2_c3.6_res10000_-1_1.mat")
-% total_samples = size(u_matrix, 1);  
-% sample_idx = randi(total_samples);  
-% A_matrix = a_matrix(sample_idx, :)';  
-% U_matrix = u_matrix(sample_idx, :)'; 
-% F_matrix = f_matrix(sample_idx, :)';
 % 参数设置  
-lambda_val = 20;   
+lambda_val = 2;   
 c = 0.9 * lambda_val^2;  % 3.6  
 num_m = 10000;  % 生成的样本数量  
-num_modes = 101;  % 正弦模式的数量 
-a = 0*pi; %  定义区间下界 a  
-b =100*pi; %  定义区间上界 b  
+num_modes = 11;  % 正弦模式的数量 
+a = 300; %  定义区间下界 a  
+b = 350; %  定义区间上界 b  
 freq_array = linspace(a, b, num_modes); % 生成等距采样数组 
 freq_sample_num = 11;
 
@@ -21,7 +14,6 @@ freq_sample_num = 11;
 a_domain = -1;  
 b_domain = 1;  
 N = 10000;
-% step = N/1000;
 h = (b_domain - a_domain) / N;  % 网格间距  
 x = linspace(a_domain, b_domain, N+1)';  % 网格点位置 (列向量)   
 % 预分配存储矩阵  
@@ -48,7 +40,7 @@ for idx = 1:num_m
     if idx>=1
         % omega = new_a_matrix(idx-1, :)'+  0.8*cos(15*pi * x);
         a1 = 1;
-        b1 = a1+100;
+        b1 = a1+50;
         for n = a1:b1
             % 累加到 omega(x)  
             omega = omega + (rand()-0.5)* 2 * cos((n-1)*pi * x)+ (rand()-0.5)* 2 * sin((n-1)*pi * x); 
@@ -94,10 +86,9 @@ end
 close(h_wait);  
 
 % % 保存结果到一个 .mat 文件  
-save('Helmholta_wfx_com_norm0_1_w100_Lp0pi_U100pi_sc_randf100_L0pi_U100pi_lam20_res10000_-1_1_test.mat' ,'a_matrix', 'f_matrix','u_matrix');  
+save('Helmholta_wfx_com_norm0_1_w50_Lp0pi_U50pi_sc_randf11_L300_U350_lam2_res10000_-1_1.mat' ,'a_matrix', 'f_matrix','u_matrix');  
 % % 提示完成  
 % disp('所有计算完成，结果已保存到 Helmholta_data0.mat 中。');
 
-% L_2error = norm(squeeze(u_matrix)-squeeze(f_matrix(1,:)),2)/norm(squeeze(f_matrix(1,:)),2);
-% L_2error = norm(u_matrix'-U_matrix,2)/norm(U_matrix,2);
+
 
