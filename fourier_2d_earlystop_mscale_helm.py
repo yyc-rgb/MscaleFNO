@@ -1,8 +1,3 @@
-"""
-@author: Zongyi Li
-This file is the Fourier Neural Operator for 2D problem such as the Darcy Flow discussed in Section 5.2 in the [paper](https://arxiv.org/pdf/2010.08895.pdf).
-"""
-
 import torch.nn.functional as F
 from timeit import default_timer
 from utilities3 import *
@@ -147,14 +142,6 @@ class FNO2d(nn.Module):
         x = x.permute(0, 2, 3, 1)
         return x
     
-    # def get_grid(self, shape, device):
-    #     batchsize, size_x, size_y = shape[0], shape[1], shape[2]
-    #     gridx = torch.tensor(np.linspace(0, 1, size_x), dtype=torch.float)
-    #     gridx = gridx.reshape(1, size_x, 1, 1).repeat([batchsize, 1, size_y, 1])
-    #     gridy = torch.tensor(np.linspace(0, 1, size_y), dtype=torch.float)
-    #     gridy = gridy.reshape(1, 1, size_y, 1).repeat([batchsize, size_x, 1, 1])
-    #     return torch.cat((gridx, gridy), dim=-1).to(device)
-
 class MultiScaleFNO2d(nn.Module):
     def __init__(self, modes1, modes2, width, num_subnets=8):
         super(MultiScaleFNO2d, self).__init__()
@@ -197,8 +184,7 @@ class MultiScaleFNO2d(nn.Module):
 ################################################################  
 # configs  
 ################################################################  
-TRAIN_PATH = r"D:\Research\FNO\fourier_neural_operator-master\fourier_neural_operator-master\Helmholtz\data_2d\Helmholtz_2D_1200to400_w10_L50pi_U70pi_f11_50pi_70pi_lambda10_L01_10-3.mat"  
-
+TRAIN_PATH = 'Helmholtz_2d_data.'
 ntrain = 800 
 ntest = 100  
 nval = 100  # 验证集大小  
@@ -217,9 +203,9 @@ h = int(((401 - 1)/r) + 1)
 s = h  
 
 # 添加模型和日志保存路径  
-best_model_path = 'mscale1_200_Helmholtz_2D_1200to400_w10_L50pi_U70pi_f11_50pi_70pi_lambda10_L01_10-3_500epoch_allsin.pt'
-log_file = 'mscale1_200_Helmholtz_2D_1200to400_w10_L50pi_U70pi_f11_50pi_70pi_lambda10_L01_10-3_500epoch_allsin.csv'  
-
+# 路径设置  
+best_model_path = 'saved_model.pt'
+log_file = 'saved_error.csv'
 ################################################################  
 # load data and data normalization  
 ################################################################  
@@ -365,47 +351,3 @@ print(f'最佳的Epoch数为: {best_epoch}')
 
 # final_test_l2 /= ntest  
 # print(f'加载最佳模型后的测试集L2误差为: {final_test_l2:.6f}')  
-
-# ################################################################  
-# # prediction function  
-# ################################################################  
-# def predict(model, x_normalizer, y_normalizer, x):  
-#     """  
-#     使用保存的模型和归一化器进行预测  
-    
-#     Args:  
-#         model: 加载的模型  
-#         x_normalizer: 输入归一化器  
-#         y_normalizer: 输出归一化器  
-#         x: 输入数据  
-    
-#     Returns:  
-#         预测结果  
-#     """  
-#     model.eval()  
-#     with torch.no_grad():  
-#         x = x_normalizer.encode(x)  
-#         x = x.reshape(-1, s, s, 1)  
-#         x = x.cuda()  
-#         out = model(x).reshape(-1, s, s)  
-#         out = y_normalizer.decode(out)  
-#     return out  
-
-# def load_and_predict(x_new):  
-#     """  
-#     加载模型和归一化器并进行预测  
-    
-#     Args:  
-#         x_new: 新的输入数据  
-    
-#     Returns:  
-#         预测结果  
-#     """  
-#     # 加载模型和归一化器  
-#     checkpoint = torch.load(best_model_path)  
-#     model.load_state_dict(checkpoint['model_state_dict'])  
-#     x_normalizer = checkpoint['x_normalizer']  
-#     y_normalizer = checkpoint['y_normalizer']  
-    
-#     # 预测  
-#     return predict(model, x_normalizer, y_normalizer, x_new)
