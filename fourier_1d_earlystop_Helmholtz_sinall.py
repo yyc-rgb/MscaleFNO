@@ -1,8 +1,3 @@
-"""
-@author: Zongyi Li
-This file is the Fourier Neural Operator for 1D problem such as the (time-independent) Burgers equation discussed in Section 5.1 in the [paper](https://arxiv.org/pdf/2010.08895.pdf).
-"""
-
 import torch.nn.functional as F
 from timeit import default_timer
 from utilities3 import *
@@ -189,13 +184,6 @@ class MultiScaleFNO1d(nn.Module):
             # x_scaled = torch.cat(((self.scaling_factors[i]+(self.scaling_factors[i]-1.0)/2 )*x, grid), dim=-1)
             outputs.append(net(x_scaled))
         
-        # grid = self.get_scaled_grid(x.shape, x.device)
-        # x = torch.cat((x, grid), dim=-1)
-        # x = self.p(x)
-        # for i, net in enumerate(self.subnets):
-        #     # 获取缩放后的输入，保持与FNO1d相同的输入格式
-        #     x_scaled = self.scaling_factors[i] * x
-        #     outputs.append(net(x_scaled))
 
         # 将每个子网络的输出加权求和
         weighted_sum = torch.stack(outputs, dim=0)
@@ -243,7 +231,7 @@ width = 16
 ################################################################
 
 # 数据加载部分  
-dataloader = MatReader(r"D:\Research\FNO\fourier_neural_operator-master\fourier_neural_operator-master\Helmholtz\Helmholtz_data\Helmholta_data_com_Orthogonal_w50_norm_-11_rand_L0pi_U50pi_f10_L0pi_U10pi_Bound0_lambda50_res10000_-1_1.mat")
+dataloader = MatReader(r"Helmholtz_data.mat")
 x_data = dataloader.read_field('a_matrix')[:, ::sub][:,:s]
 y_data = dataloader.read_field('u_matrix')[:, ::sub][:,:s]  
 
@@ -286,14 +274,11 @@ myloss = LpLoss(size_average=False)
 best_val_loss = float('inf')  
 best_test_loss = float('inf')  # 用于记录验证损失最低时对应的测试损失  
 
-# # 确保保存模型的目录存在  
-# os.makedirs('fourier_neural_operator-master\models_burgers', exist_ok=True)  
-
 # 路径设置  
-best_model_path = 'D:\Research\FNO/fourier_neural_operator-master/fourier_neural_operator-master/8scale_120_Helmholta_data_com_Orthogonal_w50_norm_-11_rand_L0pi_U50pi_f5pi_Bound0_lambda50_res10000_-1_1_4layers.pt'
+best_model_path = 'saved_model.pt'
 best_epoch = 1
 
-log_file = 'D:\Research\FNO/fourier_neural_operator-master/fourier_neural_operator-master/8scale_120_Helmholta_data_com_Orthogonal_w50_norm_-11_rand_L0pi_U50pi_f5pi_Bound0_lambda50_res10000_-1_1_4layers.csv'  
+log_file = 'saved_error.csv'
 # 定义表头  
 header = ['Epoch', 'Time(s)', 'Train L2', 'Val L2', 'Test L2']  
 
