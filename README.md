@@ -1,8 +1,5 @@
 # MscaleFNO
 
-> **Original Author:** [Zongyi Li](https://github.com/zongyi-li)  
-> **License:** MIT License  
-> 
 > This implementation is based on the [Fourier Neural Operator (FNO)](https://github.com/zongyi-li/fourier_neural_operator).  
 ---
 
