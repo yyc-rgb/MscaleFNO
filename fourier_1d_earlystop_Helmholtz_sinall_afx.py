@@ -1,8 +1,3 @@
-"""
-@author: Zongyi Li
-This file is the Fourier Neural Operator for 1D problem such as the (time-independent) Burgers equation discussed in Section 5.1 in the [paper](https://arxiv.org/pdf/2010.08895.pdf).
-"""
-
 import torch.nn.functional as F
 from timeit import default_timer
 from utilities3 import *
@@ -230,8 +225,8 @@ width = 10
 ################################################################
 
 # 数据加载部分  
-dataloader = MatReader('D:\Research\FNO/fourier_neural_operator-master/fourier_neural_operator-master\Helmholtz\Helmholtz_data\Helmholta_wfx_com_norm0_1_w50_Lp0pi_U50pi_sc_randf10_L0pi_U10pi_lam50_res10000_-1_1_test.mat')
-x_data = dataloader.read_field('a_matrix')[:, ::sub]
+dataloader = MatReader('Helmholtz_wfx_data.mat')
+_data = dataloader.read_field('a_matrix')[:, ::sub]
 f_data = dataloader.read_field('f_matrix')[:, ::sub]
 y_data = dataloader.read_field('u_matrix')[:, ::sub]  
 
@@ -304,12 +299,11 @@ best_test_loss = float('inf')  # 用于记录验证损失最低时对应的测�
 # # 确保保存模型的目录存在  
 # os.makedirs('fourier_neural_operator-master\models_burgers', exist_ok=True)  
 
-# 路径设置  
-best_model_path = 'D:\Research\FNO/fourier_neural_operator-master/fourier_neural_operator-master/8scale1_ax_120_B100_Helmholta_wfx_com_norm0_1_w10_Lp100pi_U150pi_sc_randf10_L100pi_U150pi_lam4_res10000_-1_1_1layer_500modes.pt'
+# 路径设置   
+best_model_path = 'saved_model.pt'
 best_epoch = 1
 
-log_file = 'D:\Research\FNO/fourier_neural_operator-master/fourier_neural_operator-master/8scale1_ax_120_B100_Helmholta_wfx_com_norm0_1_w30_Lp0pi_U30pi_sc_randf10_L0pi_U5pi_lam20_res10000_-1_1_1layer_500modes.csv'  
-# 定义表头  
+log_file = 'saved_error.csv'# 定义表头  
 header = ['Epoch', 'Time(s)', 'Train L2', 'Val L2', 'Test L2']  
 
 # 检查文件是否存在，如果不存在则创建并写入表头  
